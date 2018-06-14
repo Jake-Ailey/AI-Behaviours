@@ -1,0 +1,4 @@
+﻿  Duck.cpp
+c:\users\s181205\desktop\aiebootstrap-master\project2d\basebehaviour.h(3): warning C4099: 'Vector2': type name first seen using 'struct' now seen using 'class'
+  c:\users\s181205\desktop\aiebootstrap-master\mathlib\vector2.h(4): note: see declaration of 'Vector2'
+  Project2D.vcxproj -> C:\Users\s181205\Desktop\aieBootstrap-master\temp\Project2D\x64\Debug\Project2D.exe
