@@ -3,6 +3,7 @@
 
 class SeekBehaviour;
 class FleeBehaviour;
+class WanderBehaviour;
 
 class Duck : public Agent
 {
@@ -13,5 +14,6 @@ public:
 private:
 	SeekBehaviour* m_pSeekBehaviour;
 	FleeBehaviour* m_pFleeBehaviour;
+	WanderBehaviour* m_pWanderBehaviour;
 };
 

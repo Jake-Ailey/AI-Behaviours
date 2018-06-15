@@ -4,6 +4,7 @@
 #include "Renderer2D.h"
 #include "SeekBehaviour.h"
 #include "FleeBehaviour.h"
+#include "WanderBehaviour.h"
 
 class Duck;
 
@@ -32,4 +33,5 @@ protected:
 	Duck* m_player;
 	SeekBehaviour* m_seekBehaviour;
 	FleeBehaviour* m_fleeBehaviour;
+	WanderBehaviour* m_wanderBehaviour;
 };

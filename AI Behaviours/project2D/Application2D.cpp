@@ -3,7 +3,6 @@
 #include "Font.h"
 #include "Input.h"
 #include "Agent.h"
-#include "SeekBehaviour.h"
 #include "Duck.h"
 
 Application2D::Application2D() {
@@ -25,6 +24,8 @@ bool Application2D::startup() {
 
 	m_seekBehaviour = new SeekBehaviour();
 	m_fleeBehaviour = new FleeBehaviour();
+	m_wanderBehaviour = new WanderBehaviour();
+	
 	m_player = new Duck(m_shipTexture, Vector2(400, 400), 1.6f);
 	
 	m_cameraX = 0;
@@ -35,6 +36,10 @@ bool Application2D::startup() {
 }
 
 void Application2D::shutdown() {
+	delete m_seekBehaviour;
+	delete m_fleeBehaviour;
+	delete m_wanderBehaviour;
+
 	delete m_player;
 	delete m_font;
 	delete m_texture;
