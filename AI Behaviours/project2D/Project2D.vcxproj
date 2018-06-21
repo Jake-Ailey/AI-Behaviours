@@ -166,6 +166,7 @@
   <ItemGroup>
     <ClCompile Include="Agent.cpp" />
     <ClCompile Include="Application2D.cpp" />
+    <ClCompile Include="AvoidBehaviour.cpp" />
     <ClCompile Include="BaseBehaviour.cpp" />
     <ClCompile Include="Duck.cpp" />
     <ClCompile Include="FleeBehaviour.cpp" />
@@ -177,6 +178,7 @@
   <ItemGroup>
     <ClInclude Include="Agent.h" />
     <ClInclude Include="Application2D.h" />
+    <ClInclude Include="AvoidBehaviour.h" />
     <ClInclude Include="BaseBehaviour.h" />
     <ClInclude Include="Duck.h" />
     <ClInclude Include="FleeBehaviour.h" />

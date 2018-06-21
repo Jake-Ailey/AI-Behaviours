@@ -14,6 +14,9 @@ public:
 	virtual void update(float deltaTime);
 	virtual void draw(aie::Renderer2D* pRenderer);
 
+	Vector2 getFacing();
+	void setFacing(Vector2 facing);
+
 	void setVelocity(Vector2 velocity);
 	Vector2 getVelocity();
 	float getMaxSpeed();

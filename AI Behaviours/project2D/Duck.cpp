@@ -8,11 +8,11 @@ Duck::Duck(aie::Texture* pTexture, Vector2 v2Pos, float fRadians) : Agent(pTextu
 {
 	m_maxSpeed = 600.0f;
 	m_pSeekBehaviour = new SeekBehaviour();
-	addBehaviour(m_pSeekBehaviour, 0.75f);
+	addBehaviour(m_pSeekBehaviour, 0.33f);
 	m_pFleeBehaviour = new FleeBehaviour();
-	addBehaviour(m_pFleeBehaviour, 0.25f);
+	//addBehaviour(m_pFleeBehaviour, 0.5f);
 	m_pWanderBehaviour = new WanderBehaviour();
-	addBehaviour(m_pWanderBehaviour, 0.25f);
+	addBehaviour(m_pWanderBehaviour, 0.66f);
 }
 
 

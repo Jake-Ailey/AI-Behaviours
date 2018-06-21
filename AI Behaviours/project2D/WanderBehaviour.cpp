@@ -8,8 +8,6 @@
 
 WanderBehaviour::WanderBehaviour()
 {
-	m_displacement = m_displacement * circleDistance;
-	
 }
 
 
@@ -17,30 +15,47 @@ WanderBehaviour::~WanderBehaviour()
 {
 }
 
-void WanderBehaviour::setAngle(Vector2 vector, float angle)
+Vector2 WanderBehaviour::setAngle(Vector2 &vector, float angle)
 {
 	float length = vector.magnitude();
 
-	vector.x = cosf(angle) * length;
-	vector.y = sinf(angle) * length;
+	vector.x = (cosf(angle) * length);
+	vector.y = (sinf(angle) * length);	
+
+	return vector;
 }
+
+Vector2 WanderBehaviour::randomVector(Vector2 vector)
+{
+	vector.x += (((float)rand() / (float)RAND_MAX) * 2) - 1;
+	vector.y += (((float)rand() / (float)RAND_MAX) * 2) - 1;
+
+	vector.normalise();
+
+	return vector;
+}
+
 
 Vector2 WanderBehaviour::update(Agent* pAgent, float deltaTime)
 {
-	float randomNum = rand() % 2;
-	Vector2 v2Force;
+	Vector2 v2wanderForce;
 
-	m_circleCenter = pAgent->getVelocity();
-	m_circleCenter.normalise();
-	m_circleCenter = m_circleCenter * circleDistance;
+	float m_wanderRadius = 125.0f;
+	float m_wanderDistance = 55.0f;
+	float m_wanderJitter = 7.5f;	
 
-	m_displacement = m_displacement * M_PI_2;
+	 wanderTarget = wanderTarget + (randomVector(v2wanderForce) * m_wanderJitter);
 
-	setAngle(m_displacement, m_wanderAngle);
+	wanderTarget.normalise();
 
-	m_wanderAngle = (m_wanderAngle * randomNum) - (randomNum * 0.5);
+	wanderTarget = wanderTarget * m_wanderRadius;
 
-	v2Force = m_circleCenter + m_displacement;
+	Vector2 targetLocal = wanderTarget + Vector2(m_wanderDistance, 0) * pAgent->getFacing();
 
-	return v2Force;
+	targetLocal.normalise();
+
+	targetLocal = targetLocal * pAgent->getMaxSpeed();
+	targetLocal = targetLocal - pAgent->getVelocity();
+
+	return targetLocal - pAgent->getPosition();
 }

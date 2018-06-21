@@ -41,11 +41,36 @@ void Agent::update(float deltaTime)
 	Vector2 v2Pos = getPosition();
 	v2Pos = v2Pos + m_velocity * deltaTime;
 	setPosition(v2Pos);
+
+	if(m_velocity.magnitude() > 0)
+	setFacing(m_velocity);
+
 }
 
 void Agent::draw(aie::Renderer2D* pRenderer)
 {
 	pRenderer->drawSpriteTransformed3x3(m_texture, (float*)m_transform);
+}
+
+//Function to get the direction that the agent is facing, based on the Y axis the the matrix transformation
+Vector2 Agent::getFacing()
+{
+	Vector2 v2facing;
+
+	v2facing.x = this->m_transform.m[1][0];
+	v2facing.y = this->m_transform.m[1][1];
+
+	return v2facing;
+}
+
+void Agent::setFacing(Vector2 facing)
+{
+	facing.normalise();
+	m_transform.m[1][0] = facing.x;
+	m_transform.m[1][1] = facing.y;
+
+	m_transform.m[0][0] = facing.y;
+	m_transform.m[0][1] = -facing.x;
 }
 
 void Agent::setVelocity(Vector2 velocity)
