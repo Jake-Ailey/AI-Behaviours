@@ -5,8 +5,12 @@
 #include "SeekBehaviour.h"
 #include "FleeBehaviour.h"
 #include "WanderBehaviour.h"
+#include "Grid.h"
+
 
 class Duck;
+class Grid;
+class Node;
 
 class Application2D : public aie::Application {
 public:
@@ -30,6 +34,8 @@ protected:
 	float m_cameraX, m_cameraY;
 	float m_timer;
 
+	Grid* m_grid;
+	Grid::Node* m_node;
 	Duck* m_player;
 	SeekBehaviour* m_seekBehaviour;
 	FleeBehaviour* m_fleeBehaviour;

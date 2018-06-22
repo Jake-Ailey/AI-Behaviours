@@ -9,8 +9,10 @@ public:
 	WanderBehaviour();
 	~WanderBehaviour();
 
+	//Creates a new random vector each frame, giving the object a new target to seek to
 	Vector2 update(Agent* pAgent, float deltaTime);
 
+	//Sets the angle that the object will be seeking to, changes every frame
 	Vector2 setAngle(Vector2 &vector, float angle);
 
 	Vector2 randomVector(Vector2 vector);

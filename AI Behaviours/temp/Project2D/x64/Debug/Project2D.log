@@ -1,4 +1,5 @@
-﻿  Duck.cpp
-c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\basebehaviour.h(3): warning C4099: 'Vector2': type name first seen using 'struct' now seen using 'class'
-  c:\users\s181205\desktop\ai behaviours\ai behaviours\mathlib\vector2.h(4): note: see declaration of 'Vector2'
+﻿  Grid.cpp
+c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(94): warning C4312: 'type cast': conversion from 'int' to 'const char *' of greater size
+c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(94): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Project2D.vcxproj -> C:\Users\s181205\Desktop\AI Behaviours\AI Behaviours\temp\Project2D\x64\Debug\Project2D.exe

@@ -25,6 +25,8 @@ bool Application2D::startup() {
 	m_seekBehaviour = new SeekBehaviour();
 	m_fleeBehaviour = new FleeBehaviour();
 	m_wanderBehaviour = new WanderBehaviour();
+
+	m_grid = new Grid();
 	
 	m_player = new Duck(m_shipTexture, Vector2(400, 400), 1.6f);
 	
@@ -39,6 +41,8 @@ void Application2D::shutdown() {
 	delete m_seekBehaviour;
 	delete m_fleeBehaviour;
 	delete m_wanderBehaviour;
+	
+	delete m_grid;
 
 	delete m_player;
 	delete m_font;
@@ -54,18 +58,12 @@ void Application2D::update(float deltaTime) {
 	// input example
 	aie::Input* input = aie::Input::getInstance();
 
-	// use arrow keys to move camera
-	if (input->isKeyDown(aie::INPUT_KEY_UP))
-		m_cameraY += 500.0f * deltaTime;
-
-	if (input->isKeyDown(aie::INPUT_KEY_DOWN))
-		m_cameraY -= 500.0f * deltaTime;
-
-	if (input->isKeyDown(aie::INPUT_KEY_LEFT))
-		m_cameraX -= 500.0f * deltaTime;
-
-	if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
-		m_cameraX += 500.0f * deltaTime;
+	//Button to reset the grid. Will redraw the grid and randomise everything on screen. 100% random, so will not 
+	// create efficient or optimal paths on it's own
+	if (input->wasKeyPressed(aie::INPUT_KEY_R))
+	{
+		m_grid->resetCell();
+	}
 
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
@@ -87,6 +85,9 @@ void Application2D::draw() {
 
 	//Player sprite
 	m_player->draw(m_2dRenderer);
+
+	//Drawing a grid
+	m_grid->draw(m_2dRenderer, m_grid, m_font);
 
 	// done drawing sprites
 	m_2dRenderer->end();

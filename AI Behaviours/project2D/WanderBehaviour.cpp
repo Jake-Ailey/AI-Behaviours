@@ -40,9 +40,9 @@ Vector2 WanderBehaviour::update(Agent* pAgent, float deltaTime)
 {
 	Vector2 v2wanderForce;
 
-	float m_wanderRadius = 125.0f;
+	float m_wanderRadius = 325.0f;
 	float m_wanderDistance = 55.0f;
-	float m_wanderJitter = 7.5f;	
+	float m_wanderJitter = 175.0f;	
 
 	 wanderTarget = wanderTarget + (randomVector(v2wanderForce) * m_wanderJitter);
 
