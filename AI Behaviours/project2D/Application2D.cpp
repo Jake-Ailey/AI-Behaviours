@@ -20,7 +20,7 @@ bool Application2D::startup() {
 	m_texture = new aie::Texture("./textures/numbered_grid.tga");
 	m_shipTexture = new aie::Texture("./textures/ship.png");
 
-	m_font = new aie::Font("./font/consolas.ttf", 32);
+	m_font = new aie::Font("./font/consolas.ttf", 20);
 
 	m_seekBehaviour = new SeekBehaviour();
 	m_fleeBehaviour = new FleeBehaviour();
@@ -65,6 +65,37 @@ void Application2D::update(float deltaTime) {
 		m_grid->resetCell();
 	}
 
+	if (input->wasKeyPressed(aie::INPUT_KEY_SPACE))
+	{
+		//Simple toggle switch for the grid
+
+		if (m_grid->gridSwitch == false)
+			m_grid->gridSwitch = true;
+		else if (m_grid->gridSwitch == true)
+			m_grid->gridSwitch = false;
+	}
+
+	if (input->isKeyDown(aie::INPUT_KEY_LEFT))
+	{
+		m_cameraX--;
+	}
+
+	if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
+	{
+		m_cameraX++;
+	}
+
+	if (input->isKeyDown(aie::INPUT_KEY_DOWN))
+	{
+		m_cameraY--;
+	}
+
+	if (input->isKeyDown(aie::INPUT_KEY_UP))
+	{
+		m_cameraY++;
+	}
+
+
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
@@ -87,6 +118,7 @@ void Application2D::draw() {
 	m_player->draw(m_2dRenderer);
 
 	//Drawing a grid
+	if(m_grid->gridSwitch == true)
 	m_grid->draw(m_2dRenderer, m_grid, m_font);
 
 	// done drawing sprites
