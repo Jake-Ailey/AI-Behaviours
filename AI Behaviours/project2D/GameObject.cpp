@@ -21,11 +21,6 @@ void GameObject::setPosition(Vector2 v2pos)
 Vector2 GameObject::getPosition()
 {
 	return m_transform.getPositionVec2();		//Using the math library's functions
-
-	/*Vector2 v2Result;
-	v2Result.x = *m_transform.m[6];
-	v2Result.y = *m_transform.m[7];
-	return v2Result;*/
 }
 
 void GameObject::setRotation(float fRadians)

@@ -103,6 +103,7 @@ void Application2D::update(float deltaTime) {
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
 
+
 	if(input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT))
 	m_grid->update(deltaTime, m_grid);
 

@@ -23,7 +23,6 @@ Grid::Grid()
 				activeCell[i][j] = true;
 
 			m_cellNode[i][j] = new Node;
-
 		}
 	}
 }
@@ -62,7 +61,7 @@ void Grid::draw(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* pFont)
 			//Checks to see if a cell is active, and if so, draws it. The (i + 1) and (j + 1) are there to alter the x and y pos of the cells, 
 			// so that it fits nicely into the screen, and away from the edge of the screen. Gives it an artificial "border" 
 			if(activeCell[i][j])
-			pRenderer->drawBox((i + 1) * BORDER_SIZE, (j + 1) * BORDER_SIZE, CELL_SIZE, CELL_SIZE, 0, 5);
+			pRenderer->drawBox((i + 1) * BORDER_SIZE, (j + 1) * BORDER_SIZE, CELL_SIZE, CELL_SIZE, 0, 5.0f);
 
 			m_cellNode[i][j]->m_nodePosition.x = (i + 1) * BORDER_SIZE;
 			m_cellNode[i][j]->m_nodePosition.y = (j + 1) * BORDER_SIZE;
@@ -83,7 +82,6 @@ void Grid::draw(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* pFont)
 	countNeighbours(pRenderer, pGrid, pFont);
 }
 
-
 //This function reiterates through every cell, randomly turning them on or off. Basically a randomiser for every cell.
 void Grid::resetCell()
 {
@@ -101,7 +99,6 @@ void Grid::resetCell()
 	}
 	counted = false;
 }
-
 
 //REMEMBER: AN ARRAY STARTS AT 0! THIS IS WHY YOU'VE HAD A FEW ISSUES HERE
 void Grid::countNeighbours(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* pFont)
@@ -179,8 +176,13 @@ void Grid::countNeighbours(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* p
 							pGrid->m_cellNode[i][j]->m_diagonalNeighbours++;
 					}
 
+					//Adding the nodes two neighbour groups into one
 					pGrid->m_cellNode[i][j]->m_totalNeighbours = (pGrid->m_cellNode[i][j]->m_directNeighbours +
 						pGrid->m_cellNode[i][j]->m_diagonalNeighbours);
+
+					//Makes a cell inactive if it has no neighbours
+					//if (pGrid->m_cellNode[i][j]->m_totalNeighbours == 0)
+					
 				}
 			}
 		}
@@ -214,9 +216,10 @@ bool Grid::Node::mouseCheck(Grid* pGrid, int x, int y)
 	v2MousePos.y = (float)pInput->getMouseY();
 
 	//hacky check to see whether or not the mouse is hovering over a cell
-	if (v2MousePos.x >= pGrid->m_cellNode[x][y]->m_nodePosition.x && v2MousePos.y >= pGrid->m_cellNode[x][y]->m_nodePosition.y)
+	//The - 9 after the CELL_SIZE helps to bring the mouse position i line, as the cells have been moved slightly
+	if (v2MousePos.x >= (pGrid->m_cellNode[x][y]->m_nodePosition.x - 10) && v2MousePos.y >= (pGrid->m_cellNode[x][y]->m_nodePosition.y - 10))
 	{
-		if (v2MousePos.x <= (pGrid->m_cellNode[x][y]->m_nodePosition.x + CELL_SIZE) && v2MousePos.y <= (pGrid->m_cellNode[x][y]->m_nodePosition.y + CELL_SIZE))
+		if (v2MousePos.x <= (pGrid->m_cellNode[x][y]->m_nodePosition.x + CELL_SIZE - 9) && v2MousePos.y <= (pGrid->m_cellNode[x][y]->m_nodePosition.y + CELL_SIZE - 9))
 		{
 			if (pInput->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT))
 				return true;
@@ -236,6 +239,4 @@ void Grid::Node::mouseClick(Grid* pGrid, int x, int y)
 
 	pGrid->counted = false;
 }
-
-
 //_____________________________________________________________________________________________________|
