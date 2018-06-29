@@ -14,10 +14,9 @@ public:
 	Grid();
 	~Grid();
 
-	void update(float deltaTime);
+	void update(float , Grid* pGrid);
 	void draw(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* pFont);
 
-	void mouseClick();	
 	void resetCell();		//Randomises every cell on the screen, randomly turning them "on" or "off"	
 	void countNeighbours(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* pFont);  //Runs a for loop through the grid, making a count of how many active neighbours a cell has
 
@@ -32,11 +31,13 @@ public:
 		Node();
 		~Node();
 
-
 		int m_directNeighbours = 0;		//The amount a neighbours to the left, right, up, and down, max of 4
 		int m_diagonalNeighbours = 0;	//The amount of neighbours surrounding the cell diagonally, max of 4
 		int m_totalNeighbours = 0;		//The sum of both direct and diaganol neighbours, used when printing neighbours on top of cells
 		int m_cost = 0;					//The "cost" that each cell will have to be traversed through, needed for Dijkstra's Shortest Path Algorithm
+
+		bool mouseCheck(Grid* pGrid, int x, int y);
+		void mouseClick(Grid* pGrid, int x, int y);
 
 		Vector2 m_nodePosition;
 	};

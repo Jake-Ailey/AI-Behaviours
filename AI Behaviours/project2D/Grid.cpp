@@ -24,7 +24,6 @@ Grid::Grid()
 
 			m_cellNode[i][j] = new Node;
 
-			//m_cellNode[i][j]->m_nodePosition = - was going to be a weird implementation to be able to click a node to turn it off
 		}
 	}
 }
@@ -34,9 +33,18 @@ Grid::~Grid()
 	
 }
 
-void Grid::update(float deltaTime)
+void Grid::update(float deltaTime, Grid* pGrid)
 {
-
+	for (int i = 0; i < GRID_WIDTH; i++)
+	{
+		for (int j = 0; j < GRID_HEIGHT; j++)
+		{
+			if (m_cellNode[i][j]->mouseCheck(pGrid, i, j) == true)
+			{
+				m_cellNode[i][j]->mouseClick(pGrid, i, j);
+			}			
+		}
+	}
 }
 
 //The for loop starts at one so that it is away from the edge of the screen, and gives a nice "border" around the grid
@@ -56,6 +64,9 @@ void Grid::draw(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* pFont)
 			if(activeCell[i][j])
 			pRenderer->drawBox((i + 1) * BORDER_SIZE, (j + 1) * BORDER_SIZE, CELL_SIZE, CELL_SIZE, 0, 5);
 
+			m_cellNode[i][j]->m_nodePosition.x = (i + 1) * BORDER_SIZE;
+			m_cellNode[i][j]->m_nodePosition.y = (j + 1) * BORDER_SIZE;
+
 			pRenderer->setRenderColour(0x000000FF); //Setting the text colour to red 0xd80f0fFF
 
 			//Checking to see whether or not a cell is active, and if true, draws the number of neighbours it has over the top
@@ -72,17 +83,6 @@ void Grid::draw(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* pFont)
 	countNeighbours(pRenderer, pGrid, pFont);
 }
 
-//This will hopefully be a function wherein we can click on a cell to turn it on or off. Cells will first need an x and y pos however
-void Grid::mouseClick()
-{
-	aie::Input* pInput = aie::Input::getInstance();
-
-	Vector2 v2MousePos; //This will create a new v2MousePos every time we update, but we want that because the mouse position is constantly changing
-
-	v2MousePos.x = (float)pInput->getMouseX();
-	v2MousePos.y = (float)pInput->getMouseY();
-	
-}
 
 //This function reiterates through every cell, randomly turning them on or off. Basically a randomiser for every cell.
 void Grid::resetCell()
@@ -201,6 +201,40 @@ Grid::Node::Node()	//Apparently a nested class needs to reference the class it's
 Grid::Node::~Node()
 {
 
+}
+
+//Function that checks whether the mouse is hovering above a node, to prepare for the mouseClick function (basically shoddy collision)
+bool Grid::Node::mouseCheck(Grid* pGrid, int x, int y)
+{
+	aie::Input* pInput = aie::Input::getInstance();
+
+	Vector2 v2MousePos;
+
+	v2MousePos.x = (float)pInput->getMouseX();
+	v2MousePos.y = (float)pInput->getMouseY();
+
+	//hacky check to see whether or not the mouse is hovering over a cell
+	if (v2MousePos.x >= pGrid->m_cellNode[x][y]->m_nodePosition.x && v2MousePos.y >= pGrid->m_cellNode[x][y]->m_nodePosition.y)
+	{
+		if (v2MousePos.x <= (pGrid->m_cellNode[x][y]->m_nodePosition.x + CELL_SIZE) && v2MousePos.y <= (pGrid->m_cellNode[x][y]->m_nodePosition.y + CELL_SIZE))
+		{
+			if (pInput->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT))
+				return true;
+		}
+	}
+	return false;
+}
+
+//This will hopefully be a function wherein we can click on a cell to turn it on or off. Cells will first need an x and y pos however
+void Grid::Node::mouseClick(Grid* pGrid, int x, int y)
+{
+	if (pGrid->activeCell[x][y] == true)
+		pGrid->activeCell[x][y] = false;
+
+	else if (pGrid->activeCell[x][y] == false)
+		pGrid->activeCell[x][y] = true;
+
+	pGrid->counted = false;
 }
 
 

@@ -75,30 +75,36 @@ void Application2D::update(float deltaTime) {
 			m_grid->gridSwitch = false;
 	}
 
+	//------------------------------------------|
+	// Camera Controls, for testing
+	//------------------------------------------|
 	if (input->isKeyDown(aie::INPUT_KEY_LEFT))
 	{
-		m_cameraX--;
+		m_cameraX -= 200.0f * deltaTime;
 	}
 
 	if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
 	{
-		m_cameraX++;
+		m_cameraX += 200.0f * deltaTime;
 	}
 
 	if (input->isKeyDown(aie::INPUT_KEY_DOWN))
 	{
-		m_cameraY--;
+		m_cameraY -= 200.0f * deltaTime;
 	}
 
 	if (input->isKeyDown(aie::INPUT_KEY_UP))
 	{
-		m_cameraY++;
+		m_cameraY += 200.0f * deltaTime;
 	}
-
+	//__________________________________________|
 
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
+
+	if(input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT))
+	m_grid->update(deltaTime, m_grid);
 
 	m_player->update(deltaTime);
 }
