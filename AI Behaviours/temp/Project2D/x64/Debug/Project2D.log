@@ -1,8 +1,17 @@
-﻿  Grid.cpp
-c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(64): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(66): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(67): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(78): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(76): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+﻿  main.cpp
+c:\users\jake ailey\desktop\ai-behaviours.git\ai behaviours\mathlib\vector2.h(4): warning C4099: 'Vector2': type name first seen using 'class' now seen using 'struct'
+  c:\users\jake ailey\desktop\ai-behaviours.git\ai behaviours\mathlib\vector2.h(3): note: see declaration of 'Vector2'
+  Grid.cpp
+c:\users\jake ailey\desktop\ai-behaviours.git\ai behaviours\project2d\grid.cpp(81): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\jake ailey\desktop\ai-behaviours.git\ai behaviours\project2d\grid.cpp(83): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\jake ailey\desktop\ai-behaviours.git\ai behaviours\project2d\grid.cpp(84): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\jake ailey\desktop\ai-behaviours.git\ai behaviours\project2d\grid.cpp(95): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\jake ailey\desktop\ai-behaviours.git\ai behaviours\project2d\grid.cpp(93): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\stdio.h(1772): note: see declaration of 'sprintf'
-  Project2D.vcxproj -> C:\Users\s181205\Desktop\AI Behaviours\AI Behaviours\temp\Project2D\x64\Debug\Project2D.exe
+  Generating Code...
+  Compiling...
+  Application2D.cpp
+c:\users\jake ailey\desktop\ai-behaviours.git\ai behaviours\mathlib\vector2.h(4): warning C4099: 'Vector2': type name first seen using 'class' now seen using 'struct'
+  c:\users\jake ailey\desktop\ai-behaviours.git\ai behaviours\mathlib\vector2.h(3): note: see declaration of 'Vector2'
+  Generating Code...
+  Project2D.vcxproj -> C:\Users\Jake Ailey\Desktop\AI-Behaviours.git\AI Behaviours\temp\Project2D\x64\Debug\Project2D.exe

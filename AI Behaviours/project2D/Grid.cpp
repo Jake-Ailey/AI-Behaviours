@@ -32,7 +32,8 @@ Grid::~Grid()
 	
 }
 
-void Grid::update(float deltaTime, Grid* pGrid)
+//The variable leftClick will determine whether we've used a right click or a left click
+void Grid::update(float deltaTime, Grid* pGrid, bool leftClick)
 {
 	for (int i = 0; i < GRID_WIDTH; i++)
 	{
@@ -40,7 +41,11 @@ void Grid::update(float deltaTime, Grid* pGrid)
 		{
 			if (m_cellNode[i][j]->mouseCheck(pGrid, i, j) == true)
 			{
-				m_cellNode[i][j]->mouseClick(pGrid, i, j);
+				if (leftClick == true)
+					m_cellNode[i][j]->mouseClickLeft(pGrid, i, j);
+
+				else
+					m_cellNode[i][j]->mouseClickRight(pGrid, i, j);
 			}			
 		}
 	}
@@ -51,31 +56,44 @@ void Grid::update(float deltaTime, Grid* pGrid)
 // to write in the neighbour count over the top of every cells
 void Grid::draw(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* pFont)
 {
-	for (int i = 0; i < GRID_WIDTH; i++)
 	{
-		for (int j = 0; j < GRID_HEIGHT; j++)
+		for (int i = 0; i < GRID_WIDTH; i++)
 		{
-			//Resets render colour every frame, so that the cells are all the same colour
-			pRenderer->setRenderColour(0xFFFFFFFF);
-
-			//Checks to see if a cell is active, and if so, draws it. The (i + 1) and (j + 1) are there to alter the x and y pos of the cells, 
-			// so that it fits nicely into the screen, and away from the edge of the screen. Gives it an artificial "border" 
-			if(activeCell[i][j])
-			pRenderer->drawBox((i + 1) * BORDER_SIZE, (j + 1) * BORDER_SIZE, CELL_SIZE, CELL_SIZE, 0, 5.0f);
-
-			m_cellNode[i][j]->m_nodePosition.x = (i + 1) * BORDER_SIZE;
-			m_cellNode[i][j]->m_nodePosition.y = (j + 1) * BORDER_SIZE;
-
-			pRenderer->setRenderColour(0x000000FF); //Setting the text colour to red 0xd80f0fFF
-
-			//Checking to see whether or not a cell is active, and if true, draws the number of neighbours it has over the top
-			if (activeCell[i][j] == true)
+			for (int j = 0; j < GRID_HEIGHT; j++)
 			{
-				//sprintf converts our int into a number in text, and then pushes that new text into our char array
-				char text[4];
-				sprintf(text, "%i", pGrid->m_cellNode[i][j]->m_totalNeighbours);
 
-				pRenderer->drawText(pFont, text, i * BORDER_SIZE + 14, j * BORDER_SIZE + 13, 2);
+
+				//Checks to see if a cell is active, and if so, draws it. The (i + 1) and (j + 1) are there to alter the x and y pos of the cells, 
+				// so that it fits nicely into the screen, and away from the edge of the screen. Gives it an artificial "border" 
+				if (activeCell[i][j])
+
+					if (pGrid->m_cellNode[i][j]->m_startingNode == true)
+					{
+						pRenderer->setRenderColour(0xf4d142FF);
+					}
+
+					else
+					{
+						//Resets render colour every frame, so that the cells are all the same colour
+						pRenderer->setRenderColour(0xFFFFFFFF);
+					}
+
+				pRenderer->drawBox((i + 1) * BORDER_SIZE, (j + 1) * BORDER_SIZE, CELL_SIZE, CELL_SIZE, 0, 5.0f);
+
+				m_cellNode[i][j]->m_nodePosition.x = (i + 1) * BORDER_SIZE;
+				m_cellNode[i][j]->m_nodePosition.y = (j + 1) * BORDER_SIZE;
+
+				pRenderer->setRenderColour(0x000000FF); //Setting the text colour to red 0xd80f0fFF
+
+				//Checking to see whether or not a cell is active, and if true, draws the number of neighbours it has over the top
+				if (activeCell[i][j] == true)
+				{
+					//sprintf converts our int into a number in text, and then pushes that new text into our char array
+					char text[4];
+					sprintf(text, "%i", pGrid->m_cellNode[i][j]->m_totalNeighbours);
+
+					pRenderer->drawText(pFont, text, i * BORDER_SIZE + 14, j * BORDER_SIZE + 13, 2);
+				}
 			}
 		}
 	}
@@ -216,7 +234,7 @@ bool Grid::Node::mouseCheck(Grid* pGrid, int x, int y)
 	v2MousePos.y = (float)pInput->getMouseY();
 
 	//hacky check to see whether or not the mouse is hovering over a cell
-	//The - 9 after the CELL_SIZE helps to bring the mouse position i line, as the cells have been moved slightly
+	//The - 9 after the CELL_SIZE helps to bring the mouse position in line, as the cells have been moved slightly
 	if (v2MousePos.x >= (pGrid->m_cellNode[x][y]->m_nodePosition.x - 10) && v2MousePos.y >= (pGrid->m_cellNode[x][y]->m_nodePosition.y - 10))
 	{
 		if (v2MousePos.x <= (pGrid->m_cellNode[x][y]->m_nodePosition.x + CELL_SIZE - 9) && v2MousePos.y <= (pGrid->m_cellNode[x][y]->m_nodePosition.y + CELL_SIZE - 9))
@@ -229,7 +247,7 @@ bool Grid::Node::mouseCheck(Grid* pGrid, int x, int y)
 }
 
 //This will hopefully be a function wherein we can click on a cell to turn it on or off. Cells will first need an x and y pos however
-void Grid::Node::mouseClick(Grid* pGrid, int x, int y)
+void Grid::Node::mouseClickLeft(Grid* pGrid, int x, int y)
 {
 	if (pGrid->activeCell[x][y] == true)
 		pGrid->activeCell[x][y] = false;
@@ -239,4 +257,10 @@ void Grid::Node::mouseClick(Grid* pGrid, int x, int y)
 
 	pGrid->counted = false;
 }
+
+void Grid::Node::mouseClickRight(Grid* pGrid, int x, int y)
+{
+	pGrid->m_cellNode[x][y]->m_startingNode = true;
+}
+
 //_____________________________________________________________________________________________________|

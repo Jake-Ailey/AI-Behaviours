@@ -105,7 +105,10 @@ void Application2D::update(float deltaTime) {
 
 
 	if(input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT))
-	m_grid->update(deltaTime, m_grid);
+		m_grid->update(deltaTime, m_grid, true);
+
+	if (input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_RIGHT))
+		m_grid->update(deltaTime, m_grid, false);
 
 	m_player->update(deltaTime);
 }
