@@ -29,7 +29,14 @@ Grid::Grid()
 
 Grid::~Grid()
 {
-	
+	//Simple loop to delete all nodes
+	for (int i = 0; i < GRID_WIDTH; i++)
+	{
+		for (int j = 0; j < GRID_HEIGHT; j++)
+		{
+			delete m_cellNode[i][j];
+		}
+	}
 }
 
 //The variable leftClick will determine whether we've used a right click or a left click
@@ -67,7 +74,7 @@ void Grid::draw(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* pFont)
 				// so that it fits nicely into the screen, and away from the edge of the screen. Gives it an artificial "border" 
 				if (activeCell[i][j])
 
-					if (pGrid->m_cellNode[i][j]->m_startingNode == true)
+					if (pGrid->m_cellNode[i][j]->m_pathingNode == true)
 					{
 						pRenderer->setRenderColour(0xf4d142FF);
 					}
@@ -113,9 +120,11 @@ void Grid::resetCell()
 				activeCell[i][j] = false;
 			else
 				activeCell[i][j] = true;
+
+			m_cellNode[i][j]->m_pathingNode = false;		//Resets all the pathing nodes when the cells are reset
 		}
 	}
-	counted = false;
+	counted = false;		//Sets counted to false so that the draw function recalls the count function, and recounts all neighbours in the new grid
 }
 
 //REMEMBER: AN ARRAY STARTS AT 0! THIS IS WHY YOU'VE HAD A FEW ISSUES HERE
@@ -129,7 +138,7 @@ void Grid::countNeighbours(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* p
 		{
 			for (int j = 0; j < GRID_HEIGHT; j++)
 			{
-				//Checking the 4 possible neighbours and incrementing the neghbour count if they exist
+				//Checking the 4 possible neighbours and incrementing the neighbour count if they exist
 				if (pGrid->activeCell[i][j])
 				{
 					pGrid->m_cellNode[i][j]->m_directNeighbours = 0; //Resets the neighbour count each time it runs
@@ -138,14 +147,14 @@ void Grid::countNeighbours(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* p
 					//Checking directly adjacent cells
 
 					//We need to include the -1 as the array starts at 0, not 1
-					//If i is smaller than the maximum width, check to it's right
+					//If i is smaller than the maximum width, check to it's right, otherwise will try and check past the grid border
 					if (i < (GRID_WIDTH - 1))
 					{
 						if (pGrid->activeCell[i + 1][j])
 							pGrid->m_cellNode[i][j]->m_directNeighbours++;
 					}
 
-					//If i is larger than the first column, check the node to it's left. Otherwise we will check beyond the grind and get weird results
+					//If i is larger than the first column, check the node to it's left. Otherwise we will check beyond the grid and get weird results
 					if (i > 0)
 					{
 						if (pGrid->activeCell[i - 1][j])
@@ -198,7 +207,9 @@ void Grid::countNeighbours(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* p
 					pGrid->m_cellNode[i][j]->m_totalNeighbours = (pGrid->m_cellNode[i][j]->m_directNeighbours +
 						pGrid->m_cellNode[i][j]->m_diagonalNeighbours);
 
-					//Makes a cell inactive if it has no neighbours
+					pGrid->m_cellNode[i][j]->m_cost = m_cellNode[i][j]->m_totalNeighbours / 2;
+
+					//Makes a cell inactive if it has no neighbours, optional toggle
 					//if (pGrid->m_cellNode[i][j]->m_totalNeighbours == 0)
 					
 				}
@@ -220,7 +231,7 @@ Grid::Node::Node()	//Apparently a nested class needs to reference the class it's
 
 Grid::Node::~Node()
 {
-
+	
 }
 
 //Function that checks whether the mouse is hovering above a node, to prepare for the mouseClick function (basically shoddy collision)
@@ -237,11 +248,16 @@ bool Grid::Node::mouseCheck(Grid* pGrid, int x, int y)
 	//The - 9 after the CELL_SIZE helps to bring the mouse position in line, as the cells have been moved slightly
 	if (v2MousePos.x >= (pGrid->m_cellNode[x][y]->m_nodePosition.x - 10) && v2MousePos.y >= (pGrid->m_cellNode[x][y]->m_nodePosition.y - 10))
 	{
-		if (v2MousePos.x <= (pGrid->m_cellNode[x][y]->m_nodePosition.x + CELL_SIZE - 9) && v2MousePos.y <= (pGrid->m_cellNode[x][y]->m_nodePosition.y + CELL_SIZE - 9))
+		if (v2MousePos.x <= (pGrid->m_cellNode[x][y]->m_nodePosition.x + CELL_SIZE - 9) &&
+			v2MousePos.y <= (pGrid->m_cellNode[x][y]->m_nodePosition.y + CELL_SIZE - 9))
 		{
 			if (pInput->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT))
 				return true;
+
+			else if (pInput->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_RIGHT))
+				return true;
 		}
+
 	}
 	return false;
 }
@@ -250,7 +266,10 @@ bool Grid::Node::mouseCheck(Grid* pGrid, int x, int y)
 void Grid::Node::mouseClickLeft(Grid* pGrid, int x, int y)
 {
 	if (pGrid->activeCell[x][y] == true)
+	{
 		pGrid->activeCell[x][y] = false;
+		pGrid->m_cellNode[x][y]->m_pathingNode = false; //When a node is turned off, it is no longer a valid pathing node
+	}
 
 	else if (pGrid->activeCell[x][y] == false)
 		pGrid->activeCell[x][y] = true;
@@ -258,9 +277,73 @@ void Grid::Node::mouseClickLeft(Grid* pGrid, int x, int y)
 	pGrid->counted = false;
 }
 
+
+//Turns a node into a pathing node, which are indicated as a mustard yellow colour. When there are 2 or more pathing nodes,
+//it should try and find a path between the two, highlighting all nodes it travels across
 void Grid::Node::mouseClickRight(Grid* pGrid, int x, int y)
 {
-	pGrid->m_cellNode[x][y]->m_startingNode = true;
+	if (pGrid->m_cellNode[x][y]->m_pathingNode != true)
+	{
+		if (pGrid->activeCell[x][y] == true)
+		{
+			pGrid->m_cellNode[x][y]->m_pathingNode = true;
+			pathingNodeCount++;	//Keeping track of how many pathing nodes we have
+
+			if (pathingNodeCount == 1)					//If there are no other pathing nodes, this must be the starting node
+				pathingNodeStart = pGrid->m_cellNode[x][y];
+
+			else if (pathingNodeCount == 2)				//If this is our second pathing node, then it must be our ending node
+				pathingNodeEnd = pGrid->m_cellNode[x][y];
+
+			else if (pathingNodeCount == 3)				//If there are more than 2 pathing nodes, we need to recreate the path
+			{
+				//*pathingNodeStart->m_startingNode = false;
+
+				pathingNodeStart = pathingNodeEnd;		//The new starting node is now the second node we placed, and the third one becomes the new end
+
+				pathingNodeEnd = pGrid->m_cellNode[x][y];
+
+				pathingNodeCount--;	//Keeping the numbers in line, taking the count back to 2
+			}
+		}
+	}
+
+	else
+	{
+		pGrid->m_cellNode[x][y]->m_pathingNode = false;
+		pathingNodeCount--;
+	}
+}
+
+//Dijkstra's pathfinding search. Will make a search from our starting node to our ending node
+//Everything involving this search will be handled internally, being that this search will only get called from within the mouseClickRight() function
+//NOTE: Starting node is our source node, ending node is our target node. 
+//NOTE: A node's cost is equal to it's number of neighbours divided by 2 (rounded down)
+
+void Grid::Node::dijkstraSearch(Grid* pGrid, Node* startingNode, Node* endingNode)
+{
+	float gScore;				//Running total of the cost to traverse to our target node
+	startingNode->parentNode = nullptr;		//Initialising parent to nullptr, as the first node will not have any parents, just like Bruce Wayne
+
+	openList.push_back(startingNode);		//adding the starting node to the openList
+
+	while (openList.empty == false)
+	{
+		for (int i = 0; i < openList.size; i++)		//Simple bubble sort
+		{
+			for (int j = 0; j < openList.size; j++)
+			{
+				Node* temp;
+
+				if (openList[i]->m_cost > openList[j + 1]->m_cost)
+				{	
+					temp = openList[i];						//Sorting all elements in array via their cheapest traverse costs
+					openList[i] = openList[j];
+					openList[j] = openList[i];
+				}
+			}
+		}
+	}
 }
 
 //_____________________________________________________________________________________________________|
