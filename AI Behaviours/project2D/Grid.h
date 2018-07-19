@@ -39,12 +39,14 @@ public:
 		int m_directNeighbours = 0;		//The amount a neighbours to the left, right, up, and down, max of 4
 		int m_diagonalNeighbours = 0;	//The amount of neighbours surrounding the cell diagonally, max of 4
 		int m_totalNeighbours = 0;		//The sum of both direct and diaganol neighbours, used when printing neighbours on top of cells
-		int m_cost = 0;					//The cost to traverse a node is equal to m_totalNeighbours / 2, rounded down (hopefully)
+		int m_gScore = 0;					//The cost to traverse a node is equal to m_totalNeighbours / 2, rounded down (hopefully)
 
 		bool m_pathingNode = false;	//Starting and Ending nodes will be what we use for pathfinding
 		int pathingNodeCount = 0;
 
 		Node* parentNode;				//The current Node's previous node in it's list of traversed nodes
+		Node* currentNode;
+		Node* targetNode;				//The next node we aim to process
 
 		Node* pathingNodeStart;			//A way to store which nodes are the starting and ending nodes
 		Node* pathingNodeEnd;

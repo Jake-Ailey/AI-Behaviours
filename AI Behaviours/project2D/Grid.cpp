@@ -68,8 +68,6 @@ void Grid::draw(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* pFont)
 		{
 			for (int j = 0; j < GRID_HEIGHT; j++)
 			{
-
-
 				//Checks to see if a cell is active, and if so, draws it. The (i + 1) and (j + 1) are there to alter the x and y pos of the cells, 
 				// so that it fits nicely into the screen, and away from the edge of the screen. Gives it an artificial "border" 
 				if (activeCell[i][j])
@@ -90,7 +88,7 @@ void Grid::draw(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* pFont)
 				m_cellNode[i][j]->m_nodePosition.x = (i + 1) * BORDER_SIZE;
 				m_cellNode[i][j]->m_nodePosition.y = (j + 1) * BORDER_SIZE;
 
-				pRenderer->setRenderColour(0x000000FF); //Setting the text colour to red 0xd80f0fFF
+				pRenderer->setRenderColour(0x000000FF); //Setting the text colour to red: 0xd80f0fFF
 
 				//Checking to see whether or not a cell is active, and if true, draws the number of neighbours it has over the top
 				if (activeCell[i][j] == true)
@@ -207,7 +205,7 @@ void Grid::countNeighbours(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* p
 					pGrid->m_cellNode[i][j]->m_totalNeighbours = (pGrid->m_cellNode[i][j]->m_directNeighbours +
 						pGrid->m_cellNode[i][j]->m_diagonalNeighbours);
 
-					pGrid->m_cellNode[i][j]->m_cost = m_cellNode[i][j]->m_totalNeighbours / 2;
+					pGrid->m_cellNode[i][j]->m_gScore = m_cellNode[i][j]->m_totalNeighbours / 2;
 
 					//Makes a cell inactive if it has no neighbours, optional toggle
 					//if (pGrid->m_cellNode[i][j]->m_totalNeighbours == 0)
@@ -319,31 +317,56 @@ void Grid::Node::mouseClickRight(Grid* pGrid, int x, int y)
 //Everything involving this search will be handled internally, being that this search will only get called from within the mouseClickRight() function
 //NOTE: Starting node is our source node, ending node is our target node. 
 //NOTE: A node's cost is equal to it's number of neighbours divided by 2 (rounded down)
-
+//NOTE: Don't forget to add your parameters after all std::vector functions, it won't work otherwise
 void Grid::Node::dijkstraSearch(Grid* pGrid, Node* startingNode, Node* endingNode)
 {
 	float gScore;				//Running total of the cost to traverse to our target node
+	int usedElements;
+
 	startingNode->parentNode = nullptr;		//Initialising parent to nullptr, as the first node will not have any parents, just like Bruce Wayne
+	startingNode->m_gScore = 0;
 
 	openList.push_back(startingNode);		//adding the starting node to the openList
 
-	while (openList.empty == false)
+	while (!openList.empty())
 	{
-		for (int i = 0; i < openList.size; i++)		//Simple bubble sort
+		for (int i = 0; i < openList.size(); i++)		//Simple bubble sort
 		{
-			for (int j = 0; j < openList.size; j++)
+			for (int j = 0; j < openList.size(); j++)
 			{
 				Node* temp;
-
-				if (openList[i]->m_cost > openList[j + 1]->m_cost)
+	
+				if (openList[i]->m_gScore > openList[j + 1]->m_gScore)
 				{	
 					temp = openList[i];						//Sorting all elements in array via their cheapest traverse costs
-					openList[i] = openList[j];
-					openList[j] = openList[i];
+					openList[i] = openList[j + 1];
+					openList[j + 1] = temp;
+				}
+
+				currentNode = openList.front();				//The current node to be processed is the node on the front of the array
+
+				//PROCESS NODE HERE:
+				if (currentNode == openList.back())			//If we've reached the end of the array, break the loop. We're done
+					break;
+
+				openList.erase(openList.begin());			//Now that we've processed the currentNode, remove it from the open list
+															// and add it into the closed list.
+				closedList.push_back(currentNode);
+
+				for (int i = 0; i < currentNode->m_totalNeighbours; i++)	//Iterating through and processing all neighbours
+				{
+				//Options: when creating each of the nodes, create 8 pointers for each that point to their 8 neighbours, and are null if the cell isn't active
+				//Find a way to traverse up and down through the grid, by incrementing the y or x axis
+					//targetNode = currentNode + 1 ie: looking at TOP RIGHT:
+					targetNode->m_nodePosition.x = currentNode->m_nodePosition.x + 1;	//ERROR, this is only changing the target Node's position.
+					targetNode->m_nodePosition.y = currentNode->m_nodePosition.y + 1;	// not the actual Node itself. May need pointer approach
+
+					openList.push_back(targetNode);
+
+					targetNode->m_gScore = (currentNode->m_gScore + targetNode->m_gScore);
 				}
 			}
 		}
 	}
 }
-
 //_____________________________________________________________________________________________________|

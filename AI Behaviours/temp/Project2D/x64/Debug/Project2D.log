@@ -1,34 +1,19 @@
-﻿  Grid.cpp
-c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(88): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(90): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(91): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(102): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(100): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+﻿  main.cpp
+c:\users\s181205\desktop\ai behaviours\ai behaviours\mathlib\vector2.h(4): warning C4099: 'Vector2': type name first seen using 'class' now seen using 'struct'
+  c:\users\s181205\desktop\ai behaviours\ai behaviours\mathlib\vector2.h(3): note: see declaration of 'Vector2'
+  Grid.cpp
+c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(86): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(88): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(89): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(100): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(98): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.16299.0\ucrt\stdio.h(1772): note: see declaration of 'sprintf'
-c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(330): error C3867: 'std::vector<Grid::Node *,std::allocator<_Ty>>::empty': non-standard syntax; use '&' to create a pointer to member
-          with
-          [
-              _Ty=Grid::Node *
-          ]
-c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(332): error C3867: 'std::vector<Grid::Node *,std::allocator<_Ty>>::size': non-standard syntax; use '&' to create a pointer to member
-          with
-          [
-              _Ty=Grid::Node *
-          ]
-c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(332): error C2446: '<': no conversion from 'unsigned __int64 (__cdecl std::vector<Grid::Node *,std::allocator<_Ty>>::* )(void) noexcept const' to 'int'
-          with
-          [
-              _Ty=Grid::Node *
-          ]
-  c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(332): note: There is no context in which this conversion is possible
-c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(334): error C3867: 'std::vector<Grid::Node *,std::allocator<_Ty>>::size': non-standard syntax; use '&' to create a pointer to member
-          with
-          [
-              _Ty=Grid::Node *
-          ]
-c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(334): error C2446: '<': no conversion from 'unsigned __int64 (__cdecl std::vector<Grid::Node *,std::allocator<_Ty>>::* )(void) noexcept const' to 'int'
-          with
-          [
-              _Ty=Grid::Node *
-          ]
-  c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(334): note: There is no context in which this conversion is possible
+c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(323): warning C4101: 'gScore': unreferenced local variable
+c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\grid.cpp(324): warning C4101: 'usedElements': unreferenced local variable
+  Generating Code...
+  Compiling...
+  Application2D.cpp
+c:\users\s181205\desktop\ai behaviours\ai behaviours\mathlib\vector2.h(4): warning C4099: 'Vector2': type name first seen using 'class' now seen using 'struct'
+  c:\users\s181205\desktop\ai behaviours\ai behaviours\mathlib\vector2.h(3): note: see declaration of 'Vector2'
+  Generating Code...
+  Project2D.vcxproj -> C:\Users\s181205\Desktop\AI Behaviours\AI Behaviours\temp\Project2D\x64\Debug\Project2D.exe
