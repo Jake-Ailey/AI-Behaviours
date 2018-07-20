@@ -1,6 +1,7 @@
 #include "Grid.h"
 #include "Font.h"
 #include "Input.h"
+#include <algorithm>
 
 //TO-DO:
 //Decision Making Techniques
@@ -74,13 +75,18 @@ void Grid::draw(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* pFont)
 
 					if (pGrid->m_cellNode[i][j]->m_pathingNode == true)
 					{
-						pRenderer->setRenderColour(0xf4d142FF);
+						pRenderer->setRenderColour(0xf4d142FF);		//A nice mustard yellow 0xf4d142FF
 					}
+
+					else if (pGrid->m_cellNode[i][j]->m_traversed == true)
+					{
+						pRenderer->setRenderColour(0x4286f4FF);		//Nice blue colour 0x4286f4FF
+					}				
 
 					else
 					{
 						//Resets render colour every frame, so that the cells are all the same colour
-						pRenderer->setRenderColour(0xFFFFFFFF);
+						pRenderer->setRenderColour(0xFFFFFFFF);		//White
 					}
 
 				pRenderer->drawBox((i + 1) * BORDER_SIZE, (j + 1) * BORDER_SIZE, CELL_SIZE, CELL_SIZE, 0, 5.0f);
@@ -120,6 +126,11 @@ void Grid::resetCell()
 				activeCell[i][j] = true;
 
 			m_cellNode[i][j]->m_pathingNode = false;		//Resets all the pathing nodes when the cells are reset
+			m_cellNode[i][j]->m_traversed = false;
+
+			pathingNodeStart = nullptr;
+			pathingNodeEnd = nullptr;
+			pathingNodeCount = 0;
 		}
 	}
 	counted = false;		//Sets counted to false so that the draw function recalls the count function, and recounts all neighbours in the new grid
@@ -142,37 +153,75 @@ void Grid::countNeighbours(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* p
 					pGrid->m_cellNode[i][j]->m_directNeighbours = 0; //Resets the neighbour count each time it runs
 					pGrid->m_cellNode[i][j]->m_diagonalNeighbours = 0;
 
+					pGrid->m_cellNode[i][j]->parentNode = nullptr;
+
 					//Checking directly adjacent cells
 
 					//We need to include the -1 as the array starts at 0, not 1
 					//If i is smaller than the maximum width, check to it's right, otherwise will try and check past the grid border
+					//RIGHT NEIGHBOUR
 					if (i < (GRID_WIDTH - 1))
 					{
-						if (pGrid->activeCell[i + 1][j])
+						if (pGrid->activeCell[i + 1][j])			//Only checks neighbour if it's active
+						{
 							pGrid->m_cellNode[i][j]->m_directNeighbours++;
+
+							pGrid->m_cellNode[i][j]->neighbourNode[2] = pGrid->m_cellNode[i + 1][j];		//Assigning the neighbours as we count
+							pGrid->m_cellNode[i][j]->edgeCost[2] = 10;
+						}
+
+						else pGrid->m_cellNode[i][j]->neighbourNode[2] = nullptr;		//If the cell is inactive, set pointer to null
 					}
 
 					//If i is larger than the first column, check the node to it's left. Otherwise we will check beyond the grid and get weird results
+					//LEFT NEIGHBOUR
 					if (i > 0)
 					{
 						if (pGrid->activeCell[i - 1][j])
+						{
 							pGrid->m_cellNode[i][j]->m_directNeighbours++;
+
+							pGrid->m_cellNode[i][j]->neighbourNode[6] = pGrid->m_cellNode[i - 1][j];
+							pGrid->m_cellNode[i][j]->edgeCost[6] = 10;
+
+						}
+
+						else pGrid->m_cellNode[i][j]->neighbourNode[6] = nullptr;
 					}
 
 					//If j is larger than the first row, check the node above it
 					//Notice that as the grid is drawing across and then down, it starts off at 0 on the top of the screen,
 					//and increases as it works down the grid. -1 will make the grid go UP.
+					//TOP NEIGHBOUR
 					if (j > 0)
 					{
 						if (pGrid->activeCell[i][j - 1])
+						{
+
 							pGrid->m_cellNode[i][j]->m_directNeighbours++;
+
+							pGrid->m_cellNode[i][j]->neighbourNode[0] = pGrid->m_cellNode[i][j - 1];
+							pGrid->m_cellNode[i][j]->edgeCost[0] = 10;
+
+						}
+
+						else pGrid->m_cellNode[i][j]->neighbourNode[0] = nullptr;
 					}
 
 					//If j is smaller than the maximum grid height, check below it
+					//BOTTOM NEIGHBOUR
 					if (j < (GRID_HEIGHT - 1))
 					{
 						if (pGrid->activeCell[i][j + 1])
+						{
 							pGrid->m_cellNode[i][j]->m_directNeighbours++;
+
+							pGrid->m_cellNode[i][j]->neighbourNode[4] = pGrid->m_cellNode[i][j + 1];
+							pGrid->m_cellNode[i][j]->edgeCost[4] = 10;
+
+						}
+
+						else pGrid->m_cellNode[i][j]->neighbourNode[4] = nullptr;
 					}
 
 					//Checking diagonal cells
@@ -180,25 +229,56 @@ void Grid::countNeighbours(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* p
 					if (i < (GRID_WIDTH - 1) && j > 0)
 					{
 						if (pGrid->activeCell[i + 1][j - 1] == true)		//Top Right
+						{
 							pGrid->m_cellNode[i][j]->m_diagonalNeighbours++;
+
+							pGrid->m_cellNode[i][j]->neighbourNode[1] = pGrid->m_cellNode[i + 1][j - 1];
+							pGrid->m_cellNode[i][j]->edgeCost[1] = 14;
+
+						}
+
+						else pGrid->m_cellNode[i][j]->neighbourNode[1] = nullptr;
 					}
 
 					if (i > 0 && j < (GRID_HEIGHT - 1))
 					{
 						if (pGrid->activeCell[i - 1][j + 1] == true)		//Top Left
+						{
 							pGrid->m_cellNode[i][j]->m_diagonalNeighbours++;
+
+							pGrid->m_cellNode[i][j]->neighbourNode[7] = pGrid->m_cellNode[i - 1][j + 1];
+							pGrid->m_cellNode[i][j]->edgeCost[7] = 14;
+						}
+
+						else pGrid->m_cellNode[i][j]->neighbourNode[7] = nullptr;
 					}
 
 					if (i < (GRID_WIDTH - 1) && j < (GRID_HEIGHT - 1))
 					{
 						if (pGrid->activeCell[i + 1][j + 1] == true)		//Bottom Right
+						{
 							pGrid->m_cellNode[i][j]->m_diagonalNeighbours++;
+
+							pGrid->m_cellNode[i][j]->neighbourNode[3] = pGrid->m_cellNode[i + 1][j + 1];
+							pGrid->m_cellNode[i][j]->edgeCost[3] = 14;
+
+						}
+
+						else pGrid->m_cellNode[i][j]->neighbourNode[3] = nullptr;
 					}
 
 					if (i > 0 && j > 0)
 					{
 						if (pGrid->activeCell[i - 1][j - 1] == true)		//Bottom Left
+						{
 							pGrid->m_cellNode[i][j]->m_diagonalNeighbours++;
+
+							pGrid->m_cellNode[i][j]->neighbourNode[5] = pGrid->m_cellNode[i - 1][j - 1];
+							pGrid->m_cellNode[i][j]->edgeCost[5] = 14;
+
+						}
+
+						else pGrid->m_cellNode[i][j]->neighbourNode[5] = nullptr;
 					}
 
 					//Adding the nodes two neighbour groups into one
@@ -207,9 +287,8 @@ void Grid::countNeighbours(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* p
 
 					pGrid->m_cellNode[i][j]->m_gScore = m_cellNode[i][j]->m_totalNeighbours / 2;
 
-					//Makes a cell inactive if it has no neighbours, optional toggle
-					//if (pGrid->m_cellNode[i][j]->m_totalNeighbours == 0)
-					
+					//Makes a cell inactive if it has no neighbours, optional toggle on C (yet to be fully implemented)
+					//if (pGrid->m_cellNode[i][j]->m_totalNeighbours == 0)					
 				}
 			}
 		}
@@ -224,7 +303,7 @@ void Grid::countNeighbours(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* p
 
 Grid::Node::Node()	//Apparently a nested class needs to reference the class it's inside as well
 {
-
+	memset(neighbourNode, 0, sizeof(Node*) * 8);
 }
 
 Grid::Node::~Node()
@@ -260,7 +339,7 @@ bool Grid::Node::mouseCheck(Grid* pGrid, int x, int y)
 	return false;
 }
 
-//This will hopefully be a function wherein we can click on a cell to turn it on or off. Cells will first need an x and y pos however
+//Function to turn a cell on or off, changing it's ActiveCell boolean. Affects whether it gets drawn on the screen or not
 void Grid::Node::mouseClickLeft(Grid* pGrid, int x, int y)
 {
 	if (pGrid->activeCell[x][y] == true)
@@ -277,7 +356,9 @@ void Grid::Node::mouseClickLeft(Grid* pGrid, int x, int y)
 
 
 //Turns a node into a pathing node, which are indicated as a mustard yellow colour. When there are 2 or more pathing nodes,
-//it should try and find a path between the two, highlighting all nodes it travels across
+//it should try and find a path between the two, highlighting all nodes it travels across.
+//When a third pathing node is introduced, it should remove the first node and use the two most recent nodes to create a new path
+// There should never be more than 3 pathing nodes at any given time
 void Grid::Node::mouseClickRight(Grid* pGrid, int x, int y)
 {
 	if (pGrid->m_cellNode[x][y]->m_pathingNode != true)
@@ -285,23 +366,27 @@ void Grid::Node::mouseClickRight(Grid* pGrid, int x, int y)
 		if (pGrid->activeCell[x][y] == true)
 		{
 			pGrid->m_cellNode[x][y]->m_pathingNode = true;
-			pathingNodeCount++;	//Keeping track of how many pathing nodes we have
+			pGrid->pathingNodeCount++;	//Keeping track of how many pathing nodes we have
 
-			if (pathingNodeCount == 1)					//If there are no other pathing nodes, this must be the starting node
-				pathingNodeStart = pGrid->m_cellNode[x][y];
+			if (pGrid->pathingNodeCount == 1)					//If there are no other pathing nodes, this must be the starting node
+				pGrid->pathingNodeStart = pGrid->m_cellNode[x][y];
 
-			else if (pathingNodeCount == 2)				//If this is our second pathing node, then it must be our ending node
-				pathingNodeEnd = pGrid->m_cellNode[x][y];
-
-			else if (pathingNodeCount == 3)				//If there are more than 2 pathing nodes, we need to recreate the path
+			else if (pGrid->pathingNodeCount == 2)				//If this is our second pathing node, then it must be our ending node
 			{
-				//*pathingNodeStart->m_startingNode = false;
+				pGrid->pathingNodeEnd = pGrid->m_cellNode[x][y];
 
-				pathingNodeStart = pathingNodeEnd;		//The new starting node is now the second node we placed, and the third one becomes the new end
+				pGrid->dijkstraSearch(pGrid->pathingNodeStart, pGrid->pathingNodeEnd);		//Calculating the shortest path between the two selected nodes				
+			}
 
-				pathingNodeEnd = pGrid->m_cellNode[x][y];
+			else if (pGrid->pathingNodeCount == 3)				//If there are more than 2 pathing nodes, we need to recreate the path
+			{
+				pGrid->pathingNodeStart = pGrid->pathingNodeEnd;	//The new starting node is now the second node we placed, and the third one becomes the new end
 
-				pathingNodeCount--;	//Keeping the numbers in line, taking the count back to 2
+				pGrid->pathingNodeEnd = pGrid->m_cellNode[x][y];
+
+				pGrid->pathingNodeCount--;	//Keeping the numbers in line, taking the count back to 2
+
+				pGrid->dijkstraSearch(pGrid->pathingNodeStart, pGrid->pathingNodeEnd);	//Recalculating the path to the new destination
 			}
 		}
 	}
@@ -309,64 +394,100 @@ void Grid::Node::mouseClickRight(Grid* pGrid, int x, int y)
 	else
 	{
 		pGrid->m_cellNode[x][y]->m_pathingNode = false;
-		pathingNodeCount--;
+		pGrid->pathingNodeCount--;
 	}
 }
+
 
 //Dijkstra's pathfinding search. Will make a search from our starting node to our ending node
 //Everything involving this search will be handled internally, being that this search will only get called from within the mouseClickRight() function
 //NOTE: Starting node is our source node, ending node is our target node. 
-//NOTE: A node's cost is equal to it's number of neighbours divided by 2 (rounded down)
+//NOTE: A node's cost is 10 to move adjacent, and 14 to move diagonally
 //NOTE: Don't forget to add your parameters after all std::vector functions, it won't work otherwise
-void Grid::Node::dijkstraSearch(Grid* pGrid, Node* startingNode, Node* endingNode)
+std::vector<Vector2> Grid::dijkstraSearch(Node* startingNode, Node* endingNode)
 {
-	float gScore;				//Running total of the cost to traverse to our target node
-	int usedElements;
-
 	startingNode->parentNode = nullptr;		//Initialising parent to nullptr, as the first node will not have any parents, just like Bruce Wayne
 	startingNode->m_gScore = 0;
 
+	openList.clear();						//Clearing the list each time it runs, else we get errors
+	closedList.clear();
+
 	openList.push_back(startingNode);		//adding the starting node to the openList
 
-	while (!openList.empty())
+	while (!openList.empty())								//While list IS NOT empty
 	{
-		for (int i = 0; i < openList.size(); i++)		//Simple bubble sort
+		for (int i = 0; i < openList.size() - 1; i++)		//Simple bubble sort
 		{
-			for (int j = 0; j < openList.size(); j++)
+			for (int j = 0; j < openList.size() - 1; j++)
 			{
 				Node* temp;
-	
+
 				if (openList[i]->m_gScore > openList[j + 1]->m_gScore)
-				{	
+				{
 					temp = openList[i];						//Sorting all elements in array via their cheapest traverse costs
 					openList[i] = openList[j + 1];
 					openList[j + 1] = temp;
 				}
+			}
+		}
 
-				currentNode = openList.front();				//The current node to be processed is the node on the front of the array
+		Node* currentNode = openList.front();		//The current node to be processed is the node on the front of the array
 
-				//PROCESS NODE HERE:
-				if (currentNode == openList.back())			//If we've reached the end of the array, break the loop. We're done
-					break;
+		if (currentNode == endingNode)
+			break;
 
-				openList.erase(openList.begin());			//Now that we've processed the currentNode, remove it from the open list
-															// and add it into the closed list.
-				closedList.push_back(currentNode);
+		openList.erase(openList.begin());			//Now that we've processed the currentNode, remove it from the open list
+													// and add it into the closed list.
+		closedList.push_back(currentNode);
 
-				for (int i = 0; i < currentNode->m_totalNeighbours; i++)	//Iterating through and processing all neighbours
+		for (int i = 0; i < 8; i++)					//Iterating through and processing all 8 neighbours, starting at 0
+		{
+			//Iterates through all of the active neighbour nodes, starting at the Top node, and working clockwise until all 8 nodes are processed
+			Node* targetNode = currentNode->neighbourNode[i];
+			
+			//std::find is part of the <algorithm> include, and finds a given element within a list
+			if (targetNode)
+			{
+				if (std::find(closedList.begin(), closedList.end(), targetNode) == closedList.end())
 				{
-				//Options: when creating each of the nodes, create 8 pointers for each that point to their 8 neighbours, and are null if the cell isn't active
-				//Find a way to traverse up and down through the grid, by incrementing the y or x axis
-					//targetNode = currentNode + 1 ie: looking at TOP RIGHT:
-					targetNode->m_nodePosition.x = currentNode->m_nodePosition.x + 1;	//ERROR, this is only changing the target Node's position.
-					targetNode->m_nodePosition.y = currentNode->m_nodePosition.y + 1;	// not the actual Node itself. May need pointer approach
+			
+					if (std::find(openList.begin(), openList.end(), targetNode) == openList.end())
+					{
+						targetNode->m_traversed = true;													//Setting node to "traversed"
 
-					openList.push_back(targetNode);
+						openList.push_back(targetNode);													//Adding the node into the openList
 
-					targetNode->m_gScore = (currentNode->m_gScore + targetNode->m_gScore);
+						targetNode->m_gScore = (currentNode->m_gScore + currentNode->edgeCost[i]);		//Processing gScore to traverse to this node
+						targetNode->parentNode = currentNode;
+					}
+
+					else 
+					{
+						int temp;
+
+						temp = (currentNode->m_gScore + currentNode->edgeCost[i]);		//Processing gScore to traverse to this node
+
+						if (temp < targetNode->m_gScore)		//If we have found a better path, update our path to be the shorter path
+						{
+							targetNode->m_gScore = temp;
+							targetNode->parentNode = currentNode;
+						}
+					}
 				}
 			}
 		}
 	}
+
+	//Calculating the path
+
+	Node* currentNode = endingNode;						//Starting at the end of the path
+
+	while (currentNode != nullptr)						//While we haven't reached the start of the path
+	{
+		path.push_back(currentNode->m_nodePosition);	//Pushing our currentNode's position into our Vector2 stack
+		currentNode->m_pathingNode = true;				//Bool will colour the path yellow. NOTE: this does not add to pathingNodeCount above
+		currentNode = currentNode->parentNode;			//Working backwards through the parents
+	}
+	return path;										//Returns path as an std::vector<Vector2>
 }
 //_____________________________________________________________________________________________________|

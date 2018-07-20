@@ -1,6 +1,6 @@
 #pragma once
 class Agent;
-class Vector2;
+struct Vector2;
 
 class BaseBehaviour
 {
