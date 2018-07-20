@@ -458,6 +458,10 @@ std::vector<Vector2> Grid::dijkstraSearch(Node* startingNode, Node* endingNode)
 						openList.push_back(targetNode);													//Adding the node into the openList
 
 						targetNode->m_gScore = (currentNode->m_gScore + currentNode->edgeCost[i]);		//Processing gScore to traverse to this node
+						//A* IMPLEMENTATION HERE:
+						//targetNode->m_hScore = (targetNode->m_nodePosition.magnitude() - endingNode->m_nodePosition.magnitude() / 2);
+						//targetNode->m_fScore = (targetNode->m_gScore + targetNode->m_hScore);
+						//A* ENDS HERE
 						targetNode->parentNode = currentNode;
 					}
 
@@ -479,7 +483,6 @@ std::vector<Vector2> Grid::dijkstraSearch(Node* startingNode, Node* endingNode)
 	}
 
 	//Calculating the path
-
 	Node* currentNode = endingNode;						//Starting at the end of the path
 
 	while (currentNode != nullptr)						//While we haven't reached the start of the path
@@ -489,5 +492,8 @@ std::vector<Vector2> Grid::dijkstraSearch(Node* startingNode, Node* endingNode)
 		currentNode = currentNode->parentNode;			//Working backwards through the parents
 	}
 	return path;										//Returns path as an std::vector<Vector2>
+
+	//NOTE: We can't use a sleep function here to slow everything down and visualise what is happening step by step, because
+	// we've made this in a way that it calculates everything in one step, then redraws it all in another, rather than redrawing for every change. Sad.
 }
 //_____________________________________________________________________________________________________|

@@ -24,17 +24,17 @@ public:
 		//Classes are private by default, so even if the Grid class is set to public, we still need to set Node to public to access it
 	public:
 		Node();
-		~Node
-		(
-		);
+		~Node();
 
 		int m_directNeighbours = 0;		//The amount a neighbours to the left, right, up, and down, max of 4
 		int m_diagonalNeighbours = 0;	//The amount of neighbours surrounding the cell diagonally, max of 4
 		int m_totalNeighbours = 0;		//The sum of both direct and diaganol neighbours, used when printing neighbours on top of cells
-		int m_gScore = 0;					//The cost to traverse a node
+		int m_gScore = 0;				//The cost to traverse a node
+		int m_hScore = 0;				//Heuristic Cost A*
+		int m_fScore = 0;				//Total of hScore and gScore
 
-		bool m_pathingNode = false;	//Starting and Ending nodes will be what we use for pathfinding
-		bool m_traversed = false;	//Keeping track of whether or not a node has already been processed
+		bool m_pathingNode = false;		//Starting and Ending nodes will be what we use for pathfinding
+		bool m_traversed = false;		//Keeping track of whether or not a node has already been processed
 
 		Node* parentNode;				//The current Node's previous node in it's list of traversed nodes
 										
@@ -57,14 +57,15 @@ public:
 	void update(float , Grid* pGrid, bool leftClick);
 	void draw(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* pFont);
 
-	void resetCell();		//Randomises every cell on the screen, randomly turning them "on" or "off"	
 	void countNeighbours(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* pFont);  //Runs a for loop through the grid, making a count of how many active neighbours a cell has
 
 	bool activeCell[GRID_WIDTH][GRID_HEIGHT]; //Bool to store whether a cell should be active or not
 
-	bool counted = false;	//A bool that stores whether or not the neighbours have already been counted
-	bool gridSwitch = true;	//A bool to toggle the grid on and off	
-	int pathingNodeCount = 0;	//Keeps track of how many pathing nodes we have, shouldn't ever exceed 3
+	void resetCell();				//Randomises every cell on the screen, randomly turning them "on" or "off"	
+
+	bool counted = false;			//A bool that stores whether or not the neighbours have already been counted
+	bool gridSwitch = true;			//A bool to toggle the grid on and off	
+	int pathingNodeCount = 0;		//Keeps track of how many pathing nodes we have, shouldn't ever exceed 3
 
 	Node* pathingNodeStart;			//A way to store which nodes are the starting and ending nodes
 	Node* pathingNodeEnd;
@@ -77,6 +78,6 @@ public:
 	// so it was making a dijkstraSearch() function for all active nodes (over 2000)
 	std::vector<Vector2> dijkstraSearch(Node* startingNode, Node* endingNode);
 	
-	Node* m_cellNode[GRID_WIDTH][GRID_HEIGHT];				//A 2D array the same size as the grid, to store each of the nodes
+	Node* m_cellNode[GRID_WIDTH][GRID_HEIGHT];		//A 2D array the same size as the grid, to store each of the nodes
 };
 
