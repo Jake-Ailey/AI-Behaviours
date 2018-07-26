@@ -6,7 +6,14 @@
 #define CELL_SIZE 15
 #define BORDER_SIZE 20
 #define GRID_HEIGHT 35
-#define GRID_WIDTH 63
+#define GRID_WIDTH 63\
+
+//So we just need a decision making tree no. We can implement this with our flying plane, and have it change behaviours based on whatever the mouse is doing. 
+//However, we can't just make a simple bool of if statement to change it's behaviour, we need to have a proper state tree for a proper decision making implementation
+
+//So to implement decision making, we can simply have the plane changing what behaviours it's doing, like Wander or Avoid, based on how close it is to the mouse
+//IMPLEMENT FINITE STATE MACHINE!
+//Done with an switch statement/ Enum
 
 class Input;
 
@@ -65,6 +72,7 @@ public:
 
 	bool counted = false;			//A bool that stores whether or not the neighbours have already been counted
 	bool gridSwitch = true;			//A bool to toggle the grid on and off	
+	void pathOnly(Grid* pGrid);				//A function that will only draw the yellow path if true.
 	int pathingNodeCount = 0;		//Keeps track of how many pathing nodes we have, shouldn't ever exceed 3
 
 	Node* pathingNodeStart;			//A way to store which nodes are the starting and ending nodes

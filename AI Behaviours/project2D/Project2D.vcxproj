@@ -167,25 +167,37 @@
     <ClCompile Include="Agent.cpp" />
     <ClCompile Include="Application2D.cpp" />
     <ClCompile Include="AvoidBehaviour.cpp" />
+    <ClCompile Include="FleeState.cpp" />
     <ClCompile Include="BaseBehaviour.cpp" />
+    <ClCompile Include="SeekState.cpp" />
+    <ClCompile Include="DeathState.cpp" />
     <ClCompile Include="Duck.cpp" />
     <ClCompile Include="FleeBehaviour.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PursueBehaviour.cpp" />
     <ClCompile Include="SeekBehaviour.cpp" />
+    <ClCompile Include="State.cpp" />
+    <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="WanderBehaviour.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Agent.h" />
     <ClInclude Include="Application2D.h" />
     <ClInclude Include="AvoidBehaviour.h" />
+    <ClInclude Include="FleeState.h" />
     <ClInclude Include="BaseBehaviour.h" />
+    <ClInclude Include="SeekState.h" />
+    <ClInclude Include="DeathState.h" />
     <ClInclude Include="Duck.h" />
     <ClInclude Include="FleeBehaviour.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Grid.h" />
+    <ClInclude Include="PursueBehaviour.h" />
     <ClInclude Include="SeekBehaviour.h" />
+    <ClInclude Include="State.h" />
+    <ClInclude Include="StateMachine.h" />
     <ClInclude Include="WanderBehaviour.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

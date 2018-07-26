@@ -20,8 +20,10 @@ public:
 	void setVelocity(Vector2 velocity);
 	Vector2 getVelocity();
 	float getMaxSpeed();
+	float getDistanceBetween(Vector2 agentPosition, Vector2 mousePosition);			//Distance check between Duck and mouse
 
 	void addBehaviour(BaseBehaviour* pBehaviour, float weighting);
+	void removeBehaviour(BaseBehaviour* pBehaviour);
 
 protected:
 

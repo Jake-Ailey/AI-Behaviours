@@ -1,5 +1,5 @@
 #include "Agent.h"
-
+#include <math.h>
 
 Agent::Agent(aie::Texture* pTexture, Vector2 v2Pos, float fRadians) : GameObject(pTexture, v2Pos, fRadians)
 {
@@ -44,7 +44,6 @@ void Agent::update(float deltaTime)
 
 	if(m_velocity.magnitude() > 0)
 	setFacing(m_velocity);
-
 }
 
 void Agent::draw(aie::Renderer2D* pRenderer)
@@ -88,6 +87,17 @@ float Agent::getMaxSpeed()
 	return m_maxSpeed;
 }
 
+//Function to get the distance between the agent's position and the mouse position
+float Agent::getDistanceBetween(Vector2 agentPosition, Vector2 mousePosition) 
+{
+	float result;
+
+	//Distance Formula: 
+	result = sqrt(pow((mousePosition.x - agentPosition.x), 2.0f) + (pow((mousePosition.y - agentPosition.y), 2.0f)));
+
+	return result;
+}
+
 void Agent::addBehaviour(BaseBehaviour* pBehaviour, float weighting)
 {
 
@@ -95,3 +105,12 @@ void Agent::addBehaviour(BaseBehaviour* pBehaviour, float weighting)
 
 	m_BehaviourList.push_back(pBehaviour);
 }
+
+void Agent::removeBehaviour(BaseBehaviour* pBehaviour)
+{
+	if (std::find(m_BehaviourList.begin(), m_BehaviourList.end(), pBehaviour) == m_BehaviourList.end());		//If the behaviour is IN the behaviour list (i think)
+	{
+		m_BehaviourList.erase(m_BehaviourList.begin());
+	}
+}
+

@@ -11,6 +11,9 @@
 class Duck;
 class Grid;
 class Node;
+class StateMachine;
+class SeekState;
+class FleeState;
 
 class Application2D : public aie::Application {
 public:
@@ -28,7 +31,7 @@ protected:
 
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Texture*		m_texture;
-	aie::Texture*		m_shipTexture;
+	aie::Texture*		m_duckTexture;
 	aie::Font*			m_font;
 
 	float m_cameraX, m_cameraY;
@@ -36,8 +39,12 @@ protected:
 
 	Grid* m_grid;
 	Grid::Node* m_node;
-	Duck* m_player;
+	Duck* m_duck;
 	SeekBehaviour* m_seekBehaviour;
 	FleeBehaviour* m_fleeBehaviour;
 	WanderBehaviour* m_wanderBehaviour;
+
+	StateMachine* m_stateMachine;
+	SeekState* m_seekState;
+	FleeState* m_fleeState;
 };

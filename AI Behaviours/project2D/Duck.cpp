@@ -2,6 +2,7 @@
 #include "SeekBehaviour.h"
 #include "FleeBehaviour.h"
 #include "WanderBehaviour.h"
+#include "StateMachine.h"
 
 
 Duck::Duck(aie::Texture* pTexture, Vector2 v2Pos, float fRadians) : Agent(pTexture, v2Pos, fRadians)
@@ -14,7 +15,6 @@ Duck::Duck(aie::Texture* pTexture, Vector2 v2Pos, float fRadians) : Agent(pTextu
 	m_pWanderBehaviour = new WanderBehaviour();
 	addBehaviour(m_pWanderBehaviour, 0.66f);
 }
-
 
 Duck::~Duck()
 {

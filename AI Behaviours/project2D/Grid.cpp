@@ -89,6 +89,7 @@ void Grid::draw(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* pFont)
 						pRenderer->setRenderColour(0xFFFFFFFF);		//White
 					}
 
+
 				pRenderer->drawBox((i + 1) * BORDER_SIZE, (j + 1) * BORDER_SIZE, CELL_SIZE, CELL_SIZE, 0, 5.0f);
 
 				m_cellNode[i][j]->m_nodePosition.x = (i + 1) * BORDER_SIZE;
@@ -135,6 +136,21 @@ void Grid::resetCell()
 	}
 	counted = false;		//Sets counted to false so that the draw function recalls the count function, and recounts all neighbours in the new grid
 }
+
+void Grid::pathOnly(Grid* pGrid)		//Function to shut off all cells that aren't the pathing nodes
+{
+	for (int i = 0; i < GRID_WIDTH; i++)
+	{
+		for (int j = 0; j < GRID_HEIGHT; j++)
+		{
+			if (pGrid->m_cellNode[i][j]->m_pathingNode != true)
+			{
+				pGrid->activeCell[i][j] = false;
+			}
+		}
+	}
+}
+
 
 //REMEMBER: AN ARRAY STARTS AT 0! THIS IS WHY YOU'VE HAD A FEW ISSUES HERE
 void Grid::countNeighbours(aie::Renderer2D* pRenderer, Grid* pGrid, aie::Font* pFont)
@@ -461,7 +477,7 @@ std::vector<Vector2> Grid::dijkstraSearch(Node* startingNode, Node* endingNode)
 						//A* IMPLEMENTATION HERE:
 						//targetNode->m_hScore = (targetNode->m_nodePosition.magnitude() - endingNode->m_nodePosition.magnitude() / 2);
 						//targetNode->m_fScore = (targetNode->m_gScore + targetNode->m_hScore);
-						//A* ENDS HERE
+						//A* ENDS HERE and did not really heckin work
 						targetNode->parentNode = currentNode;
 					}
 

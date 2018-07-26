@@ -4,6 +4,9 @@
 #include "Input.h"
 #include "Agent.h"
 #include "Duck.h"
+#include "StateMachine.h"
+#include "SeekState.h"
+#include "FleeState.h"
 
 Application2D::Application2D() {
 
@@ -18,7 +21,7 @@ bool Application2D::startup() {
 	m_2dRenderer = new aie::Renderer2D();
 
 	m_texture = new aie::Texture("./textures/numbered_grid.tga");
-	m_shipTexture = new aie::Texture("./textures/ship.png");
+	m_duckTexture = new aie::Texture("./textures/cuteDuck.png");
 
 	m_font = new aie::Font("./font/consolas.ttf", 20);
 
@@ -28,7 +31,11 @@ bool Application2D::startup() {
 
 	m_grid = new Grid();
 	
-	m_player = new Duck(m_shipTexture, Vector2(400, 400), 1.6f);
+	m_duck = new Duck(m_duckTexture, Vector2(400, 400), 1.0f);
+
+	m_stateMachine = new StateMachine();
+	m_seekState = new SeekState();
+	m_fleeState = new FleeState();
 	
 	m_cameraX = 0;
 	m_cameraY = 0;
@@ -44,11 +51,13 @@ void Application2D::shutdown() {
 	
 	delete m_grid;
 
-	delete m_player;
+	delete m_duck;
 	delete m_font;
 	delete m_texture;
-	delete m_shipTexture;
+	delete m_duckTexture;
 	delete m_2dRenderer;
+
+	delete m_stateMachine;
 }
 
 void Application2D::update(float deltaTime) {
@@ -103,14 +112,24 @@ void Application2D::update(float deltaTime) {
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
 
-
 	if(input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT))
 		m_grid->update(deltaTime, m_grid, true);
 
 	if (input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_RIGHT))
 		m_grid->update(deltaTime, m_grid, false);
 
-	m_player->update(deltaTime);
+	if (input->wasKeyPressed(aie::INPUT_KEY_C))
+		m_grid->pathOnly(m_grid);
+
+	if (input->wasKeyPressed(aie::INPUT_KEY_S))		//TEST SECTION
+	{
+		m_duck->removeBehaviour(m_wanderBehaviour);		//BUG HERE, the old state is getting removed, but new one is not being added in
+		m_stateMachine->changeState(m_seekState);		//Also you should really move the m_ducks behaviour controls into the stateMachine
+	}
+
+	m_duck->update(deltaTime);
+
+	m_stateMachine->update(m_duck);
 }
 
 void Application2D::draw() {
@@ -124,8 +143,8 @@ void Application2D::draw() {
 	// begin drawing sprites
 	m_2dRenderer->begin();
 
-	//Player sprite
-	m_player->draw(m_2dRenderer);
+	//m_duck sprite
+	m_duck->draw(m_2dRenderer);
 
 	//Drawing a grid
 	if(m_grid->gridSwitch == true)
