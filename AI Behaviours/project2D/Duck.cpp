@@ -3,22 +3,51 @@
 #include "FleeBehaviour.h"
 #include "WanderBehaviour.h"
 #include "StateMachine.h"
+#include "SeekState.h"
+#include "FleeState.h"
+#include "WanderState.h"
 
 
 Duck::Duck(aie::Texture* pTexture, Vector2 v2Pos, float fRadians) : Agent(pTexture, v2Pos, fRadians)
 {
 	m_maxSpeed = 600.0f;
-	m_pSeekBehaviour = new SeekBehaviour();
-	addBehaviour(m_pSeekBehaviour, 0.33f);
-	m_pFleeBehaviour = new FleeBehaviour();
-	//addBehaviour(m_pFleeBehaviour, 0.5f);
-	m_pWanderBehaviour = new WanderBehaviour();
-	addBehaviour(m_pWanderBehaviour, 0.66f);
+
+	m_pStateMachine = new StateMachine;
+
+	m_pSeekState = new SeekState;
+	m_pFleeState = new FleeState;
+	m_pWanderState = new WanderState;
+
+	m_pSeekState->initialiseState(this);
 }
 
 Duck::~Duck()
 {
-	delete m_pSeekBehaviour;
-	delete m_pFleeBehaviour;
-	delete m_pWanderBehaviour;
+	delete m_pStateMachine;
+	delete m_pSeekState;
+	delete m_pFleeState;
+}
+
+void Duck::update(Vector2 v2mousePos, float deltaTime)
+{
+	Agent::update(deltaTime);
+
+	float distance = getDistanceBetween(this->getPosition(), v2mousePos);
+
+	if (distance < 50.0f)
+	{
+		this->m_pStateMachine->changeState(m_pFleeState);
+	}
+
+	if (distance > 50.0f && distance < 150.0f)
+	{
+		this->m_pStateMachine->changeState(m_pWanderState);
+	}
+
+	else if (distance > 150.0f)
+	{
+		this->m_pStateMachine->changeState(m_pSeekState);
+	}
+
+	m_pStateMachine->update(this);
 }

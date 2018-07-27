@@ -1,4 +1,6 @@
 ﻿  Duck.cpp
   Application2D.cpp
+c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\application2d.cpp(74): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\s181205\desktop\ai behaviours\ai behaviours\project2d\application2d.cpp(75): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   Generating Code...
   Project2D.vcxproj -> C:\Users\s181205\Desktop\AI Behaviours\AI Behaviours\temp\Project2D\x64\Debug\Project2D.exe

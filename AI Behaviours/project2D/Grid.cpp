@@ -149,6 +149,7 @@ void Grid::pathOnly(Grid* pGrid)		//Function to shut off all cells that aren't t
 			}
 		}
 	}
+	counted = false;		//Recounts all the new neighbours for each pathing node
 }
 
 

@@ -40,6 +40,7 @@ protected:
 	Grid* m_grid;
 	Grid::Node* m_node;
 	Duck* m_duck;
+
 	SeekBehaviour* m_seekBehaviour;
 	FleeBehaviour* m_fleeBehaviour;
 	WanderBehaviour* m_wanderBehaviour;

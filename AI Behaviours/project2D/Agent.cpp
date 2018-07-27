@@ -88,7 +88,7 @@ float Agent::getMaxSpeed()
 }
 
 //Function to get the distance between the agent's position and the mouse position
-float Agent::getDistanceBetween(Vector2 agentPosition, Vector2 mousePosition) 
+float Agent::getDistanceBetween(Vector2 agentPosition, Vector2 mousePosition)
 {
 	float result;
 

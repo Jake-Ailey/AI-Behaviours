@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Vector2.h"
+#include "StateMachine.h"
 #include "BaseBehaviour.h"
 #include <vector>
 
@@ -24,6 +25,8 @@ public:
 
 	void addBehaviour(BaseBehaviour* pBehaviour, float weighting);
 	void removeBehaviour(BaseBehaviour* pBehaviour);
+
+	StateMachine* m_pStateMachine;
 
 protected:
 

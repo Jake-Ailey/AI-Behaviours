@@ -23,11 +23,7 @@ bool Application2D::startup() {
 	m_texture = new aie::Texture("./textures/numbered_grid.tga");
 	m_duckTexture = new aie::Texture("./textures/cuteDuck.png");
 
-	m_font = new aie::Font("./font/consolas.ttf", 20);
-
-	m_seekBehaviour = new SeekBehaviour();
-	m_fleeBehaviour = new FleeBehaviour();
-	m_wanderBehaviour = new WanderBehaviour();
+	m_font = new aie::Font("./font/consolas.ttf", 20);	
 
 	m_grid = new Grid();
 	
@@ -36,6 +32,12 @@ bool Application2D::startup() {
 	m_stateMachine = new StateMachine();
 	m_seekState = new SeekState();
 	m_fleeState = new FleeState();
+
+	m_seekBehaviour = new SeekBehaviour();
+	m_fleeBehaviour = new FleeBehaviour();
+	m_wanderBehaviour = new WanderBehaviour();
+
+
 	
 	m_cameraX = 0;
 	m_cameraY = 0;
@@ -66,6 +68,11 @@ void Application2D::update(float deltaTime) {
 
 	// input example
 	aie::Input* input = aie::Input::getInstance();
+
+	Vector2 v2mousePos;
+
+	v2mousePos.x = input->getMouseX();
+	v2mousePos.y = input->getMouseY();
 
 	//Button to reset the grid. Will redraw the grid and randomise everything on screen. 100% random, so will not 
 	// create efficient or optimal paths on it's own
@@ -121,15 +128,7 @@ void Application2D::update(float deltaTime) {
 	if (input->wasKeyPressed(aie::INPUT_KEY_C))
 		m_grid->pathOnly(m_grid);
 
-	if (input->wasKeyPressed(aie::INPUT_KEY_S))		//TEST SECTION
-	{
-		m_duck->removeBehaviour(m_wanderBehaviour);		//BUG HERE, the old state is getting removed, but new one is not being added in
-		m_stateMachine->changeState(m_seekState);		//Also you should really move the m_ducks behaviour controls into the stateMachine
-	}
-
-	m_duck->update(deltaTime);
-
-	m_stateMachine->update(m_duck);
+	m_duck->update(v2mousePos, deltaTime);
 }
 
 void Application2D::draw() {

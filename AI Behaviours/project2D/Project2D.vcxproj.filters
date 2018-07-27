@@ -78,6 +78,9 @@
     <ClCompile Include="SeekState.cpp">
       <Filter>Source Files\StateMachine</Filter>
     </ClCompile>
+    <ClCompile Include="WanderState.cpp">
+      <Filter>Source Files\StateMachine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application2D.h">
@@ -126,6 +129,9 @@
       <Filter>Header Files\StateMachine</Filter>
     </ClInclude>
     <ClInclude Include="FleeState.h">
+      <Filter>Header Files\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="WanderState.h">
       <Filter>Header Files\StateMachine</Filter>
     </ClInclude>
   </ItemGroup>
