@@ -22,7 +22,7 @@ Vector2 FleeBehaviour::update(Agent* pAgent, float deltaTime)
 	v2MousePos.y = (float)pInput->getMouseY();
 
 	//Seek Force
-	Vector2 v2Dir =pAgent->getPosition() - v2MousePos;	//Our basic direction getting. Where we want to go MINUS where we currently are
+	Vector2 v2Dir = pAgent->getPosition() - v2MousePos;	//Our basic direction getting. Where we want to go MINUS where we currently are
 	v2Dir.normalise();
 	v2Dir = v2Dir * pAgent->getMaxSpeed();
 	Vector2 v2Force = v2Dir - pAgent->getVelocity(); // Force is = to our current direction MINUS our velocity

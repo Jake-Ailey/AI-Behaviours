@@ -8,4 +8,3 @@ public:
 
 	Vector2 update(Agent* pAgent, float deltaTime);
 };
-

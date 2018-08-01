@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseBehaviour.h"
+
 class SeekBehaviour : public BaseBehaviour
 {
 public:
